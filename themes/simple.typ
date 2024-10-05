@@ -21,7 +21,7 @@
 ///
 ///   The `components.side-by-side` function is a simple wrapper of the `grid` function. It means you can use the `grid.cell(colspan: 2, ..)` to make the cell take 2 columns.
 ///
-///   For example, `#slide(composer: 2)[A][B][#grid.cell(colspan: 2)[Footer]] will make the `Footer` cell take 2 columns.
+///   For example, `#slide(composer: 2)[A][B][#grid.cell(colspan: 2)[Footer]]` will make the `Footer` cell take 2 columns.
 ///
 ///   If you want to customize the composer, you can pass a function to the `composer` argument. The function should receive the contents of the slide and return the content of the slide, like `#slide(composer: grid.with(columns: 2))[A][B]`.
 ///
@@ -40,12 +40,15 @@
       utils.call-or-display(self, self.store.header-right),
     ),
   )
-  let footer(self) = deco-format(
-    components.left-and-right(
-      utils.call-or-display(self, self.store.footer),
-      utils.call-or-display(self, self.store.footer-right),
-    ),
-  )
+  let footer(self) = {
+    v(.5em)
+    deco-format(
+      components.left-and-right(
+        utils.call-or-display(self, self.store.footer),
+        utils.call-or-display(self, self.store.footer-right),
+      ),
+    )
+  }
   let self = utils.merge-dicts(
     self,
     config-page(
@@ -132,7 +135,11 @@
 /// ```
 #let simple-theme(
   aspect-ratio: "16-9",
-  header: self => utils.display-current-heading(setting: utils.fit-to-width.with(grow: false, 100%), depth: self.slide-level),
+  header: self => utils.display-current-heading(
+    setting: utils.fit-to-width.with(grow: false, 100%),
+    level: 1,
+    depth: self.slide-level,
+  ),
   header-right: self => self.info.logo,
   footer: none,
   footer-right: context utils.slide-counter.display() + " / " + utils.last-slide-number,
@@ -148,6 +155,7 @@
     config-page(
       paper: "presentation-" + aspect-ratio,
       margin: 2em,
+      footer-descent: 0em,
     ),
     config-common(
       slide-fn: slide,
